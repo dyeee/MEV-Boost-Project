@@ -2,7 +2,6 @@
 The purpose of this script is to verify the format of the file ethereum_mev_blocks_19580000_to_19589999.parquet, 
 perform basic data processing, and save the processed data as a CSV file.
 
-
 # data_process.py:
 This script handles data cleaning and feature engineering. It processes the payload data to identify the winning bids within the bids data, and stores the results in a DataFrame called matched_df.
 
