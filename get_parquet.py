@@ -1,13 +1,20 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Jul 24 01:58:13 2024
-
 @author: S.K.
+
+The purpose of this program is to verify the format of the file ethereum_mev_blocks_19580000_to_19589999.parquet, 
+perform basic data processing, and save the processed data as a CSV file.
+
+The original dataset downloaded from "MEV-Boost Winning Bid Data" on github
+https://github.com/dataalways/mevboost-data/tree/main
+This repository is a collection of public domain Ethereum MEV-Boost winning bid data.
+
 """
 import os
 import pandas as pd
 
-path = '../data/'
+path = 'data/'
 file_name = 'ethereum__mev__blocks__19580000_to_19589999.parquet' # parquet file
 csv_file = 'mev_blocks_19580000_to_19589999.csv'
 
