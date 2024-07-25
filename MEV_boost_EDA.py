@@ -52,16 +52,16 @@ plt.title('Scatter Plot of Base Fee per Gas vs Number of Transactions')
 plt.xlabel('Number of Transactions')
 plt.ylabel('Base Fee per Gas')
 plt.grid(True)
-plt.show()
 plt.savefig('graphs/Scatter Plot of Base Fee per Gas vs Number of Transactions.png')
+plt.show()
 
 #
 sns.distplot(bids_df['normalized_num_tx'],color='cyan', label='All Bids')
 sns.distplot(matched_df['normalized_num_tx'], color='orange', label='Winner Bids')
 
 plt.title('Distribution of "Normalized Number of Transactions" in Bids and Winner Bids')
-plt.show()
 plt.savefig('graphs/Distribution of Normalized_num_tx in Bids and Winner Bids.png')
+plt.show()
 
 #
 sns.distplot(bids_df['value'],color='grey', label='All Bids')
@@ -70,16 +70,16 @@ sns.distplot(bids_df['value_max'], color='blue', label='Max bid value per block'
 plt.legend()
 
 plt.title('Distribution of "Value" in Bids and Winner Bids')
-plt.show()
 plt.savefig('graphs/Distribution of Value in Bids and Winner Bids.png')
+plt.show()
 
 #
 sns.distplot(bids_df['normalized_value'],color='grey', label='All Bids')
 sns.distplot(matched_df['normalized_value'], color='orange', label='Winner Bids')
 
 plt.title('Distribution of "Normalized Value Per Block" in Bids and Winner Bids')
-plt.show()
 plt.savefig('graphs/Distribution of Normalized_Value Per Block in Bids and Winner Bids.png')
+plt.show()
 
 #
 sns.distplot(bids_df['time_difference'],color='red', label='All Bids')
@@ -89,8 +89,8 @@ plt.legend()
 plt.xlim(0, 20)
 
 plt.title('Distribution of "Bid Timestamp" in all Bids and Winner Bids')
-plt.show()
 plt.savefig('graphs/Distribution of Bid_Timestamp in all Bids and Winner Bids.png')
+plt.show()
 
 #
 time_difference = matched_df['time_difference']
@@ -102,8 +102,8 @@ plt.title('Scatter Plot of Winner Bids Timestamp vs Block Number')
 plt.xlabel('Block Number')
 plt.ylabel('Time Difference')
 plt.grid(True)
-plt.show()
 plt.savefig('graphs/Scatter Plot of Winner Bids Timestamp vs Block Number.png')
+plt.show()
 
 #
 normalized_t_diff = matched_df['normalized_t_diff']
@@ -116,6 +116,7 @@ plt.xlabel('Block Number')
 plt.ylabel('Normalized_t_diff')
 plt.grid(True)
 plt.savefig('graphs/Scatter Plot of Winner Bids Normalized Time Difference vs Block Number.png')
+plt.show()
 
 #
 sns.distplot(bids_df['normalized_t_diff'],color='purple', label='All Bids')
@@ -124,8 +125,8 @@ plt.legend()
 plt.xlim(0, 1)
 
 plt.title('Distribution of "Normalized Time Difference" in Bids and Winner Blocks')
-plt.show()
 plt.savefig('graphs/Distribution of Normalized_t_diff in Bids and Winner Blocks')
+plt.show()
 
 #
 normalized_t_diff = matched_df['normalized_t_diff']
@@ -137,8 +138,8 @@ plt.title('Scatter Plot of Winner Bids Normalized Number of Transactions vs Norm
 plt.xlabel('Normalized Number of Transactions')
 plt.ylabel('Normalized time difference')
 plt.grid(True)
-plt.show()
 plt.savefig('graphs/Scatter Plot of Winner Bids Normalized Number of Transactions vs Normalized Time Difference.png')
+plt.show()
 
 #
 normalized_t_diff = matched_df['normalized_t_diff']
@@ -150,8 +151,8 @@ plt.title('Scatter Plot of Normalized Value vs Winner Bids Normalized Time Diffe
 plt.xlabel('Normalized value')
 plt.ylabel('Normalized time difference')
 plt.grid(True)
-plt.show()
 plt.savefig('graphs/Scatter Plot of Normalized Value vs Winner Bids Normalized Time Difference.png')
+plt.show()
 
 #
 sns.kdeplot(
@@ -176,8 +177,8 @@ plt.title('Density Plot of Winner Bids Normalized Time Difference vs Normalized 
 plt.xlabel('Normalized value')
 plt.ylabel('Normalized time difference')
 plt.grid(True)
-plt.show()
 plt.savefig('graphs/Density Plot of Winner Bids Normalized Time Difference vs Normalized Value.png')
+plt.show()
 
 #
 sns.distplot(matched_df['value_max'],color='purple', label='Maximum Value of Block')
@@ -185,8 +186,8 @@ sns.distplot(matched_df['value'],color='orange', label = 'Winner Bids Value')
 plt.legend()
 
 plt.title('Distribution of "Maximum Value per Block" in Bids and Winner Bids Value')
-plt.show()
 plt.savefig('graphs/Distribution of Maximum Value per Block in Bids and Winner Bids Value.png')
+plt.show()
 
 #
 value_diff = (matched_df['value_max'] - matched_df['value'])
@@ -202,8 +203,8 @@ plt.title('Scatter Plot of Winner Bids Normalized Time Difference vs Maximum Val
 plt.xlabel('Block number')
 plt.ylabel('Maximum Value of Block - Winner Bids Value')
 plt.grid(True)
-plt.show()
 plt.savefig('graphs/Scatter Plot of Winner Bids Normalized Time Difference vs Maximum Value of Block.png')
+plt.show()
 
 #
 value_rank = matched_df['value_rank']
@@ -219,8 +220,8 @@ plt.title('Scatter Plot of Winner Bids Normalized Time Difference vs Winner Bids
 plt.xlabel('Block number')
 plt.ylabel('Winner Bids Value Rank')
 plt.grid(True)
-plt.show()
 plt.savefig('graphs/Scatter Plot of Winner Bids Normalized Time Difference vs Winner Bids Value Rank.png')
+plt.show()
 
 #
 value_rank_percent = matched_df['value_rank_percent']
@@ -236,8 +237,8 @@ plt.title('Scatter Plot of Winner Bids Normalized Time Difference vs Winner Bids
 plt.xlabel('Block number')
 plt.ylabel('Winner Bids Value Rank (%)')
 plt.grid(True)
-plt.show()
 plt.savefig('graphs/Scatter Plot of Winner Bids Normalized Time Difference vs Winner Bids Value Rank (percent).png')
+plt.show()
 
 #
 sns.kdeplot(
@@ -262,8 +263,8 @@ plt.title('Density Plot of Winner Bids Normalized Time Difference vs Winner Bids
 plt.xlabel('Winner Bids Value Rank (%)')
 plt.ylabel('Winner Bids Normalized Time Difference')
 plt.grid(True)
-plt.show()
 plt.savefig('graphs/Density Plot of Winner Bids Normalized Time Difference vs Winner Bids Value Rank (percent).png')
+plt.show()
 
 #
 numeric_cols = [ "time_difference", "normalized_t_diff", "normalized_value", "num_tx", "normalized_num_tx", "gasUsedRatio", "value", "bids_count", "base_fee_per_gas"]
@@ -272,9 +273,8 @@ corr_matrix = bids_df[numeric_cols].corr()
 plt.figure(figsize=(10, 8))
 sns.heatmap(corr_matrix, cmap='coolwarm', vmin=-1, vmax=1, annot=True, fmt=".2f")
 plt.title('Correlation Matrix')
-plt.show()
-
 plt.savefig('graphs/Correlation (time_difference).png')
+plt.show()
 
 #
 numeric_cols = [ "normalized_t_diff", "time_difference", "normalized_value", "num_tx", "normalized_num_tx", "gasUsedRatio", "value", "bids_count", "base_fee_per_gas"]
@@ -283,6 +283,5 @@ corr_matrix = bids_df[numeric_cols].corr()
 plt.figure(figsize=(10, 8))
 sns.heatmap(corr_matrix, cmap='coolwarm', vmin=-1, vmax=1, annot=True, fmt=".2f")
 plt.title('Correlation Matrix')
-plt.show()
-
 plt.savefig('graphs/Correlation (normalized_t_diff).png')
+plt.show()

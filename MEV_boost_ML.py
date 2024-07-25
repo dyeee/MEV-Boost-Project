@@ -65,9 +65,9 @@ plt.title('Actual time_difference vs Predicted time_difference')
 plt.xlabel('Values Count')
 plt.ylabel('Time_difference')
 plt.legend()
-plt.show()
 
 plt.savefig('graphs/Time_difference_ALL_payloads - Random Forest Regression Model.png')
+plt.show()
 
 
 ### Choose dataset based on 'slot' ###
@@ -111,9 +111,9 @@ plt.title('Actual time_difference vs Predicted time_difference')
 plt.xlabel('Values Count')
 plt.ylabel('Time_difference')
 plt.legend()
-plt.show()
 
 plt.savefig('graphs/Time_difference_600 - Random Forest Regression Model.png')
+plt.show()
 
 
 ### Build Random Forest Regression Model (train_size = 200) ###
@@ -143,9 +143,9 @@ plt.title('Actual time_difference vs Predicted time_difference')
 plt.xlabel('Values Count')
 plt.ylabel('Time_difference')
 plt.legend()
-plt.show()
 
 plt.savefig('graphs/Time_difference_200 - Random Forest Regression Model.png')
+plt.show()
 
 
 ### Build Random Forest Regression Model (Normalized_t_diff, train_size = 200) ###
@@ -174,6 +174,6 @@ plt.title('Normalized time_difference vs Predicted normalized time_difference')
 plt.xlabel('Values Count')
 plt.ylabel('Normalized_t_diff')
 plt.legend()
-plt.show()
 
 plt.savefig('graphs/Normalized_t_diff_200 - Random Forest Regression Model.png')
+plt.show()
