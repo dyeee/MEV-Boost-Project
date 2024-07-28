@@ -37,10 +37,12 @@ else:
 #
 sns.distplot(bids_df['gasUsedRatio'],color='green')
 plt.savefig('graphs/gasUsedRatio.png')
+plt.show()
 
 #
 sns.distplot(bids_df['num_tx'],color='blue')
 plt.savefig('graphs/num_tx.png')
+plt.show()
 
 #
 num_tx = matched_df['num_tx']
@@ -56,17 +58,27 @@ plt.savefig('graphs/Scatter Plot of Base Fee per Gas vs Number of Transactions.p
 plt.show()
 
 #
-sns.distplot(bids_df['normalized_num_tx'],color='cyan', label='All Bids')
+sns.distplot(bids_df['normalized_num_tx'],color='blue', label='All Bids')
 sns.distplot(matched_df['normalized_num_tx'], color='orange', label='Winner Bids')
+plt.legend()
 
 plt.title('Distribution of "Normalized Number of Transactions" in Bids and Winner Bids')
 plt.savefig('graphs/Distribution of Normalized_num_tx in Bids and Winner Bids.png')
 plt.show()
 
+#####
+sns.distplot(bids_df['gasUsedRatio'],color='green', label='All Bids')
+sns.distplot(matched_df['gasUsedRatio'], color='orange', label='Winner Bids')
+plt.legend()
+
+plt.title('Distribution of "Gas Used Ratio" in Bids and Winner Bids')
+plt.savefig('graphs/Distribution of gasUsedRatio in Bids and Winner Bids.png')
+plt.show()
+
 #
-sns.distplot(bids_df['value'],color='grey', label='All Bids')
+sns.distplot(bids_df['value'],color='purple', label='All Bids')
 sns.distplot(matched_df['value'], color='orange', label='Winner Bids')
-sns.distplot(bids_df['value_max'], color='blue', label='Max bid value per block')
+sns.distplot(bids_df['value_max'], color='grey', label='Max bid value per block')
 plt.legend()
 
 plt.title('Distribution of "Value" in Bids and Winner Bids')
@@ -74,8 +86,9 @@ plt.savefig('graphs/Distribution of Value in Bids and Winner Bids.png')
 plt.show()
 
 #
-sns.distplot(bids_df['normalized_value'],color='grey', label='All Bids')
+sns.distplot(bids_df['normalized_value'],color='purple', label='All Bids')
 sns.distplot(matched_df['normalized_value'], color='orange', label='Winner Bids')
+plt.legend()
 
 plt.title('Distribution of "Normalized Value Per Block" in Bids and Winner Bids')
 plt.savefig('graphs/Distribution of Normalized_Value Per Block in Bids and Winner Bids.png')
@@ -119,7 +132,7 @@ plt.savefig('graphs/Scatter Plot of Winner Bids Normalized Time Difference vs Bl
 plt.show()
 
 #
-sns.distplot(bids_df['normalized_t_diff'],color='purple', label='All Bids')
+sns.distplot(bids_df['normalized_t_diff'],color='magenta', label='All Bids')
 sns.distplot(matched_df['normalized_t_diff'],color='orange', label = 'Winner Blocks')
 plt.legend()
 plt.xlim(0, 1)
