@@ -9,4 +9,7 @@ This script handles data cleaning and feature engineering. It processes the payl
 This script performs statistical analysis on the bids data, payload data, and the matched_df DataFrame. It provides insights and visualizations to understand the characteristics and distributions within these datasets.
 
 # MEV_boost_ML.py:
-This script is dedicated to model training and evaluation. It uses the cleaned and processed data to train machine learning models, and evaluates their performance.
+This script is dedicated to model training and evaluation. It uses the cleaned and processed data to train machine learning models and evaluates their performance. Additionally, it seeks to find the optimal parameters for the models.
+
+# Feature_select.py
+This script is used to test the performance of two sets of factors, "original factors (absolute)" and "normalized factors (relative)," when they are used as response variables alternately.
