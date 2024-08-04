@@ -10,10 +10,12 @@ Created on Wed Jul 24 01:51:55 2024
 """
 import data_process as process
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestRegressor
-from sklearn import metrics
+from sklearn.metrics import r2_score, mean_squared_error
+
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -28,152 +30,209 @@ if 'matched_df' not in locals():
     # Process the data if matched_df does not exist
     bids_df, payload_df = process.cleaning(origin_bids_df, origin_payload_df)
     bids_df, payload_df = process.transformation(bids_df, payload_df)
-    matched_df = process.get_matched_df(bids_df, payload_df)
+    matched_df, origin_matched_df = process.get_matched_df(bids_df, payload_df)
     
 else:
     print("matched_df already exists. Skipping processing steps.")
 
 
-### Partition the data for training and testing ###
 
-parameters = ['base_fee_per_gas','num_tx','value','gasUsedRatio']
-X = payload_df[parameters]
-y = payload_df['time_difference']
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state=42)
-
-
-### Build Random Forest Regression Model for ALL Payload data ###
-
-rf_regressor = RandomForestRegressor(n_estimators=100)
-
-rf_regressor.fit(X_train,y_train)
-
-y_pred = rf_regressor.predict(X_test)
-
-# R squared error
-error_score = metrics.r2_score(y_test, y_pred)
-print("\n R squared error (ALL payloads) : ", error_score)
-
-y_test_list = list(y_test)
-print("Number of testing data:", len(y_test_list))
-
-# plot
-plt.plot(y_test_list, color='red', label = 'Actual time_difference')
-plt.plot(y_pred, color='blue', label='Predicted time_difference')
-plt.title('Actual time_difference vs Predicted time_difference')
-plt.xlabel('Values Count')
-plt.ylabel('Time_difference')
-plt.legend()
-
-plt.savefig('graphs/Time_difference_ALL_payloads - Random Forest Regression Model.png')
-plt.show()
-
+##### Build Random Forest Regression Model for ALL Matched data #####
+#==============================================================================
+# parameter sets
+parameters1 = ['base_fee_per_gas','normalized_num_tx','normalized_value','gasUsedRatio', 'normalized_t_diff'] # predictors
+parameters2 = ['base_fee_per_gas','normalized_num_tx','normalized_value','gasUsedRatio', 'time_difference_max']
 
 ### Choose dataset based on 'slot' ###
 
-def dataset (slot, train_size = 600, pred_size = 30, df = payload_df, responser = 'time_difference'):
-    slot_range = range(slot - train_size, slot)
-    pred_slot_range = range(slot, slot + pred_size)
-    parameters = ['base_fee_per_gas','num_tx','value','gasUsedRatio']
+def dataset (slot, slot_range = 600, responser = 'time_difference_max', parameters = parameters1, df = matched_df):
+    slot_range = range(slot - slot_range, slot)
     X = df[df['slot'].isin(slot_range)][parameters]
     y = df[df['slot'].isin(slot_range)][responser]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state=42)
-    X_validation = df[df['slot'].isin(pred_slot_range)][parameters]
-    y_validation = df[df['slot'].isin(pred_slot_range)][responser]
-    return X_train, X_test, y_train, y_test, X_validation, y_validation
+    return X_train, X_test, y_train, y_test
 
 
-### Build Random Forest Regression Model (train_size = 600) ###
+### Build Random Forest Regression Model ###
 
-slot = 8787200 # set slot number
+# RF model (for all matched_df)
+def RF_all(responser, parameters, colour, n_estimators=100, test_size=0.2, random_state=42):
+    
+    X = matched_df[parameters]
+    y = matched_df[responser] 
+    
+    # Partition the data for training and testing
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
 
-X_train, X_test, y_train, y_test, X_validation, y_validation = dataset (slot)
+    # Initialize the Random Forest Regressor
+    rf_regressor = RandomForestRegressor(n_estimators=n_estimators, random_state=random_state)
 
-rf_regressor = RandomForestRegressor(n_estimators=50)
+    # Train the model
+    rf_regressor.fit(X_train, y_train)
 
-rf_regressor.fit(X_train,y_train)
+    # Make predictions
+    y_pred = rf_regressor.predict(X_test)
 
-y_pred = rf_regressor.predict(X_test)
+    # Evaluate the model
+    error_score = r2_score(y_test, y_pred)
+    mse = mean_squared_error(y_test, y_pred)
+    rmse = np.sqrt(mse)
+    print(f"【{responser}】")
+    print(f"\nR squared error (ALL matched): {error_score}")
+    print(f"Mean Squared Error (ALL matched): {mse}")
+    print(f"Root Mean Squared Error (ALL matched): {rmse}")
+    print("Number of training data:", len(y_train))
+    print("Number of testing data:", len(y_test))
 
-# R squared error
-error_score = metrics.r2_score(y_test, y_pred)
-print("\n R squared error (train_size = 600): ", error_score)
+    plt.plot(list(y_test), color='red', label='Actual ' + responser)
+    plt.plot(y_pred, color=colour, label='Predicted ' + responser)
+    plt.title('Actual ' + responser + ' vs Predicted ' + responser)
+    plt.xlabel('Values Count')
+    plt.ylabel(responser + ' (s)')
+    plt.legend()
 
-y_test_list = list(y_test)
-print("Number of testing data:", len(y_test_list))
+    # Save the plot
+    plt.savefig(f'graphs/ALL_matched {responser} - Random Forest Regression Model.png')
+    plt.show()
+    
+    
+# RF model (select slot range)
+def RF (slot, slot_range, responser, parameters, colour):
+    X_train, X_test, y_train, y_test = dataset (slot, slot_range, responser, parameters)
+    
+    rf_regressor = RandomForestRegressor(n_estimators=30)
 
-# plot
-plt.figure(figsize=(10, 8))
-plt.plot(y_test_list, color='red', label = 'Actual time_difference')
-plt.plot(y_pred, color='blue', label='Predicted time_difference')
-plt.title('Actual time_difference vs Predicted time_difference')
-plt.xlabel('Values Count')
-plt.ylabel('Time_difference')
-plt.legend()
+    rf_regressor.fit(X_train,y_train)
 
-plt.savefig('graphs/Time_difference_600 - Random Forest Regression Model.png')
-plt.show()
+    y_pred = rf_regressor.predict(X_test)
 
+    # R squared error
+    error_score = r2_score(y_test, y_pred)
+    print(f"\nR squared error ({responser}, slot range = {slot_range}): ", error_score)
 
-### Build Random Forest Regression Model (train_size = 200) ###
+    print("Number of training data:", len(y_train))
+    print("Number of testing data:", len(y_test))
 
-slot = 8787560
+    # plot
+    plt.figure(figsize=(10, 8))
+    plt.plot(list(y_test), color='red', label = 'Actual ' + responser)
+    plt.plot(y_pred, color=colour, label='Predicted ' + responser)
+    plt.title('Actual ' + responser + ' vs Predicted ' + responser)
+    plt.xlabel('Values Count')
+    plt.ylabel(responser + ' (s)')
+    plt.legend()
 
-X_train, X_test, y_train, y_test, X_validation, y_validation = dataset (slot, 200, 20, matched_df)
+    plt.savefig(f'graphs/{responser}_{slot_range} - Random Forest Regression Model.png')
+    plt.show()
 
-rf_regressor = RandomForestRegressor(n_estimators=30)
-
-rf_regressor.fit(X_train,y_train)
-
-y_pred = rf_regressor.predict(X_test)
-
-# R squared error
-error_score = metrics.r2_score(y_test, y_pred)
-print("\n R squared error (train_size = 200): ", error_score)
-
-y_test_list = list(y_test)
-print("Number of testing data:", len(y_test_list))
-
-# plot
-plt.figure(figsize=(10, 8))
-plt.plot(y_test_list, color='red', label = 'Actual time_difference')
-plt.plot(y_pred, color='blue', label='Predicted time_difference')
-plt.title('Actual time_difference vs Predicted time_difference')
-plt.xlabel('Values Count')
-plt.ylabel('Time_difference')
-plt.legend()
-
-plt.savefig('graphs/Time_difference_200 - Random Forest Regression Model.png')
-plt.show()
+#==============================================================================
+# Feature Selection and plot the model prediction
+RF_all('time_difference_max', parameters1, 'green')
+RF_all('time_difference', parameters2, 'purple')
+RF_all('normalized_t_diff', parameters2, 'blue')
+RF(8787590, 600, 'time_difference_max', parameters1, 'green')
+RF(8787590, 600, 'time_difference', parameters2, 'purple')
+RF(8787590, 600, 'normalized_t_diff', parameters2, 'blue')
+#==============================================================================
 
 
-### Build Random Forest Regression Model (Normalized_t_diff, train_size = 200) ###
 
-slot = 8787560
+##### Extract the best hyperparameters and using GridSearchCV and find the best training size #####
+#==============================================================================
+def hyperparameter_tuning(X_train, y_train):
+    param_grid = {
+        'n_estimators': [10, 20, 30, 50, 100, 200],
+        'max_depth': [10, 20, 30, 50, None],
+        'min_samples_split': [2, 5, 10],
+        'min_samples_leaf': [1, 2, 4]
+    }
+    
+    rf = RandomForestRegressor(random_state=42)
 
-X_train, X_test, y_train, y_test, X_validation, y_validation = dataset (slot, 200, 20, matched_df, 'normalized_t_diff')
+    grid_search = GridSearchCV(estimator=rf, param_grid=param_grid, cv=5, 
+                               scoring='neg_mean_squared_error', 
+                               n_jobs=-1, verbose=0)
 
-rf_regressor = RandomForestRegressor(n_estimators=30)
+    grid_search.fit(X_train, y_train)
+    
+    print("Best hyperparameters found: ", grid_search.best_params_)
+    
+    return grid_search.best_estimator_
 
-rf_regressor.fit(X_train,y_train)
+def RF_turning (slot, S_range, responser, parameters, colour):
+    train_range = range(100, S_range, 100) # find the best slide range
+    best_train_size = 0
+    best_score = -np.inf
+    scores = []
+    
+    for train_size in train_range:
+        # Adjust the dataset function as per your data processing requirements
+        X_train, X_test, y_train, y_test = dataset(slot, train_size, responser, parameters)
+        
+        best_rf = hyperparameter_tuning(X_train, y_train)
+        y_pred = best_rf.predict(X_test)
+        
+        score = r2_score(y_test, y_pred)
+        scores.append(score)
+        print(f"Train size: {train_size}, R squared error: {score}")
+        if score > best_score:
+            best_score = score
+            best_train_size = train_size
 
-y_pred = rf_regressor.predict(X_test)
+    plt.figure(figsize=(10, 6))
+    plt.plot(train_range, scores, color=colour, marker='o')
+    plt.title('Model Performance vs. Training Set Size (' + responser + ')')
+    plt.xlabel('Training Set Size')
+    plt.ylabel('R Squared Error')
+    plt.grid(True)
+    plt.savefig(f'graphs/Train_Size_Performance {responser}.png')
+    plt.show()
+    print(f"\nBest train size of {responser}: {best_train_size} with R squared error: {best_score}")
+    
+    return best_train_size, best_rf
+    
+#==============================================================================
+# Optimised the model
+best_train_size1, best_rf1 = RF_turning(8787590, 1201, 'time_difference_max', parameters1, 'green')
+best_train_size2, best_rf2 = RF_turning(8787590, 1201, 'time_difference', parameters2, 'purple')
+best_train_size3, best_rf3 = RF_turning(8787590, 1201, 'normalized_t_diff', parameters2, 'blue')
+#==============================================================================
 
-# R squared error
-error_score = metrics.r2_score(y_test, y_pred)
-print("\n R squared error (Normalized_t_diff, train_size = 200): ", error_score)
 
-y_test_list = list(y_test)
-print("Number of testing data:", len(y_test_list))
 
-# plot
-plt.plot(y_test_list, color='red', label = 'Normalized_t_diff')
-plt.plot(y_pred, color='blue', label='Predicted normalized_t_diff')
-plt.title('Normalized time_difference vs Predicted normalized time_difference')
-plt.xlabel('Values Count')
-plt.ylabel('Normalized_t_diff')
-plt.legend()
+### Plot for the best model ###
+def plotRF (name, colour):
 
-plt.savefig('graphs/Normalized_t_diff_200 - Random Forest Regression Model.png')
-plt.show()
+    plt.figure(figsize=(10, 8))
+    plt.plot(list(y_test), color='red', label='Actual ' + name)
+    plt.plot(y_pred, color=colour, label='Predicted ' + name)
+    plt.title('Actual ' + name + ' vs Predicted ' + name)
+    plt.xlabel('Values Count')
+    plt.ylabel(name + ' (s)')
+    plt.legend()
+
+    plt.savefig(f'graphs/Optimized_{name}_RF_Model.png')
+    plt.show()
+    
+#==============================================================================
+# Plot optimised predictive model
+slot = 8787200
+
+# time_difference_max
+X_train, X_test, y_train, y_test = dataset(slot, best_train_size1)
+y_pred = best_rf1.predict(X_test)
+
+plotRF('time_difference_max', 'green')
+
+# normalized_t_diff
+X_train, X_test, y_train, y_test = dataset(slot, best_train_size2, 'time_difference', parameters2)
+y_pred = best_rf2.predict(X_test)
+
+plotRF('time_difference', 'purple')
+
+# normalized_t_diff
+X_train, X_test, y_train, y_test = dataset(slot, best_train_size3, 'normalized_t_diff', parameters2)
+y_pred = best_rf3.predict(X_test)
+
+plotRF('normalized_t_diff', 'blue')
+#==============================================================================

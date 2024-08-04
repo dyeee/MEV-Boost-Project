@@ -27,7 +27,6 @@ def cleaning(bids_df, payload_df):
     print("Data cleaning has completed")    
     return bids_df, payload_df
 
-
 ### Data Transformation and get Derived Variables ###
 
 def transformation(bids_df, payload_df):
@@ -36,12 +35,11 @@ def transformation(bids_df, payload_df):
     bids_df['block_timestamp'] = pd.to_datetime(bids_df['block_timestamp'], format='mixed')
     bids_df['timestamp'] = pd.to_datetime(bids_df['timestamp'], format='mixed')
     payload_df['value'] = payload_df['value'].astype(float)
-    payload_df['block_timestamp'] = pd.to_datetime(payload_df['block_timestamp'])
-    payload_df['bid_timestamp_ms'] = pd.to_datetime(payload_df['bid_timestamp_ms'])
+    payload_df['bid_timestamp_ms'] = payload_df['bid_timestamp_ms'] / 1000
     
     # Calculate time_difference
     bids_df['time_difference'] = (bids_df['block_timestamp'] - bids_df['timestamp']).dt.total_seconds()
-    payload_df['time_difference'] = (payload_df['block_timestamp'] - payload_df['bid_timestamp_ms']).dt.total_seconds()
+    payload_df['time_difference'] = (payload_df['block_timestamp'] - payload_df['bid_timestamp_ms'])
     
     # Calculate normalized time difference
     min_time_difference_per_block = bids_df.groupby('block_number')['time_difference'].min().reset_index()
@@ -111,9 +109,14 @@ def get_matched_df(bids_df, payload_df):
     
     # Combine bids and payloads data
     matched_df = bids_df[bids_df['block_hash'].isin(winner_block_hash_list)] 
+    matched_df = matched_df[matched_df['time_difference_max'] <= 16]
+    
+    # For each identical `slot`, keep the row with the smaller `time_difference`
+    origin_matched_df = matched_df
+    matched_df = matched_df.loc[matched_df.groupby('slot')['time_difference'].idxmin()] # distinct_matched_df 
     
     print("Got matched_df (winner bids data)")
-    return matched_df
+    return matched_df, origin_matched_df
 
 ### test ###
 #Load the bids and payloads CSV files
@@ -123,4 +126,4 @@ def get_matched_df(bids_df, payload_df):
 
 #bids_df, payload_df = cleaning(origin_bids_df, origin_payload_df)
 #bids_df, payload_df = transformation(bids_df, payload_df)
-#matched_df = get_matched_df(bids_df, payload_df)
+#matched_df, origin_matched_df = get_matched_df(bids_df, payload_df)
