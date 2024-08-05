@@ -32,7 +32,7 @@ else:
     print("matched_df already exists. Skipping processing steps.")
     
 
-##### Duplicate estimation #####
+##### Duplicate Estimation #####
 #==============================================================================
 def plot_duplicate(df, title):
     block_hash_counts = df['block_hash'].value_counts()
@@ -41,7 +41,7 @@ def plot_duplicate(df, title):
     block_hash_counts_df.columns = ['block_hash', 'count']
     
     distinct_block_hash = df['block_hash'].nunique()
-    print(f"Distinct_block_hashs: {distinct_block_hash}")
+    print(f"Distinct_block_hashs: {distinct_block_hash} in {title}'")
     
     mean_count = block_hash_counts_df['count'].mean()
     
@@ -154,7 +154,7 @@ def dist_all_vs_win(v, colour, df1 = bids_df, df2 = matched_df):
     sns.distplot(df2[v], color='orange', label='Winner Bids')
     plt.legend()
 
-    plt.title(f'Distribution of "{v}" in Bids and Winner Bids')
+    plt.title(f'Distribution of "{v}" in All Bids and Winner Bids')
     plt.savefig(f'graphs/Distribution of {v} in Bids and Winner Bids (no outlier).png')
     plt.show()
     
@@ -163,7 +163,7 @@ def dist_outlier(v, colour, df1 = bids_df, df2 = matched_df):
     sns.distplot(df2[v], color='orange', label='Winner Bids')
     plt.legend()
 
-    plt.title(f'Distribution of "{v}" in Bids and Winner Bids')
+    plt.title(f'Distribution of "{v}" in All Bids and Winner Bids')
     plt.savefig(f'graphs/Distribution of {v} in Bids and Winner Bids.png')
     plt.show()
     
@@ -228,6 +228,19 @@ sns_outlier ('normalised_winner', matched_df,
              'gasUsedRatio', 'normalized_num_tx', 'normalized_value', 'normalized_t_diff')#
 
 ###
+bids_df_filtered = bids_df[bids_df['time_difference'] <= 16]
+
+sns.distplot(bids_df_filtered['time_difference'],color='red', label='All Bids')
+sns.distplot(matched_df['time_difference'],color='orange', label = 'Winner Bids')
+plt.axvline(x=12, color='blue', linestyle='--', linewidth=2, label='x = 12')
+plt.legend()
+plt.xlim(0, 16)
+
+plt.title('Distribution of "time_difference" in all Bids and Winner Bids')
+plt.savefig('graphs/Distribution of time_difference in all Bids and Winner Bids.png')
+plt.show()#
+
+###
 dist_all_vs_win('normalized_num_tx', 'blue')#
 dist_outlier('normalized_num_tx', 'blue')#
 
@@ -247,15 +260,11 @@ dist_all_vs_win('normalized_t_diff', 'magenta')#
 dist_outlier('normalized_t_diff', 'magenta')#
 
 ###
-sns.distplot(bids_df['time_difference'],color='red', label='All Bids')
-sns.distplot(matched_df['time_difference'],color='orange', label = 'Winner Bids')
-plt.axvline(x=12, color='blue', linestyle='--', linewidth=2, label='x = 12')
-plt.legend()
-plt.xlim(0, 20)
+print("Statistics for matched_df['time_difference']:")
+print(matched_df['time_difference'].describe())
 
-plt.title('Distribution of "time_difference" in all Bids and Winner Bids')
-plt.savefig('graphs/Distribution of time_difference in all Bids and Winner Bids.png')
-plt.show()#
+print("Statistics for bids_df['time_difference']:")
+print(bids_df['time_difference'].describe())
 
 ###
 #
@@ -297,24 +306,25 @@ scatter (bids_df, 'normalized_t_diff', 'normalized_value', 'red', 'All Bids')#
 
 ###
 block_number = matched_df['block_number']
-value_diff = (matched_df['value_max'] - matched_df['value'])
 normalized_t_diff = matched_df['normalized_t_diff']
+value_diff = (matched_df['value_max'] - matched_df['value'])
 name = ['block_number', 'value_diff', 'normalized_t_diff']
-scatter3(block_number, value_diff, normalized_t_diff, name)#
+scatter3(block_number, normalized_t_diff, value_diff, name)#
 
 
 block_number = matched_df['block_number']
-value_rank = matched_df['value_rank']
 normalized_t_diff = matched_df['normalized_t_diff']
-name = ['block_number', 'value_rank', 'normalized_t_diff']
+value_rank = matched_df['value_rank']
+name = ['block_number', 'normalized_t_diff', 'value_rank']
 scatter3(block_number, value_rank, normalized_t_diff, name)#
 
 
 block_number = matched_df['block_number']
-value_rank_percent = matched_df['value_rank_percent'] # also be use in density plot
 normalized_t_diff = matched_df['normalized_t_diff'] # also be use in density plot
+value_rank_percent = matched_df['value_rank_percent'] # also be use in density plot
+
 name = ['block_number', 'value_rank_percent', 'normalized_t_diff']
-scatter3(block_number, value_rank_percent, normalized_t_diff, name)#
+scatter3(block_number, normalized_t_diff, value_rank_percent, name)#
 
 ###
 density(value_rank_percent , normalized_t_diff, ['value_rank_percent','normalized_t_diff'], False)#
@@ -338,3 +348,4 @@ numeric_cols3 = ["time_difference_max", "normalized_t_diff", "time_difference",
                  "normalized_value", "num_tx", "normalized_num_tx", "gasUsedRatio", 
                  "value", "bids_count", "base_fee_per_gas"]
 correlation_matrix(bids_df, numeric_cols3, 'time_difference_max')#
+#==============================================================================
