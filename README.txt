@@ -1,15 +1,29 @@
-# get_parquet.py:
-The purpose of this script is to verify the format of the file ethereum_mev_blocks_19580000_to_19589999.parquet, 
-perform basic data processing, and save the processed data as a CSV file.
+# Ethereum MEV Blocks Analysis Project
 
-# data_process.py:
-This script handles data cleaning and feature engineering. It processes the payload data to identify the winning bids within the bids data, and stores the results in a DataFrame called matched_df.
+This project includes several Python scripts that manage and analyze Ethereum MEV block data. Below is a brief overview of each script:
 
-# MEV_boost_EDA.py:
-This script performs statistical analysis on the bids data, payload data, and the matched_df DataFrame. It provides insights and visualizations to understand the characteristics and distributions within these datasets.
+## Scripts Description
 
-# MEV_boost_ML.py:
-This script is dedicated to model training and evaluation. It uses the cleaned and processed data to train machine learning models and evaluates their performance. Additionally, it seeks to find the optimal parameters for the models.
+### get_parquet.py
+- **Purpose**: Verifies the format of the file `ethereum_mev_blocks_19580000_to_19589999.parquet`.
+- **Functionality**:
+  - Performs basic data processing.
+  - Saves the processed data as a CSV file.
 
-# Feature_select.py
-This script is used to test the performance of two sets of factors, "original factors (absolute)" and "normalized factors (relative)," when they are used as response variables alternately.
+### data_process.py
+- **Purpose**: Handles data cleaning and feature engineering.
+- **Functionality**:
+  - Processes the payload data to identify the winning bids within the bids data.
+  - Stores the results in a DataFrame called `matched_df`.
+
+### MEV_boost_EDA.py
+- **Purpose**: Performs statistical analysis on various datasets.
+- **Functionality**:
+  - Analyzes the `bids data`, `payload data`, and `matched_df` DataFrame.
+  - Provides insights and visualizations to understand the characteristics and distributions within these datasets.
+
+### MEV_boost_ML.py
+- **Purpose**: Dedicated to model training and evaluation.
+- **Functionality**:
+  - Uses cleaned and processed data to train machine learning models.
+  - Evaluates the
