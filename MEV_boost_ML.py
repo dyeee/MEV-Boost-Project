@@ -22,7 +22,7 @@ warnings.filterwarnings('ignore')
 
 ### Load the bids and payloads CSV files ###
 
-origin_bids_df = pd.read_csv("data/Eden_MEV-boost_bid_20240404.csv") # MEV-boost bids data from Eden Public Data
+origin_bids_df = pd.read_csv("data/Eden_MEV-Boost_bid_20240404.csv") # MEV-Boost bids data from Eden Public Data
 origin_payload_df = pd.read_csv("data/mev_blocks_19580000_to_19589999.csv") # MEV-Boost Winning Bid Data
 
 # Check if matched_df already exists in the current namespace
@@ -40,8 +40,8 @@ else:
 ##### Build Random Forest Regression Model for ALL Matched data #####
 #==============================================================================
 # parameter sets
-parameters1 = ['base_fee_per_gas','normalized_num_tx','normalized_value','gasUsedRatio', 'normalized_t_diff'] # predictors
-parameters2 = ['base_fee_per_gas','normalized_num_tx','normalized_value','gasUsedRatio', 'time_difference_max']
+parameters1 = ['base_fee_per_gas','normalised_num_tx','normalised_value','gasUsedRatio', 'bids_count', 'normalised_t_diff'] # predictors
+parameters2 = ['base_fee_per_gas','normalised_num_tx','normalised_value','gasUsedRatio', 'bids_count', 'time_difference_max']
 
 ### Choose dataset based on 'slot' ###
 
@@ -129,15 +129,15 @@ def RF (slot, slot_range, responser, parameters, colour):
 # Feature Selection and plot the model prediction
 RF_all('time_difference_max', parameters1, 'green')
 RF_all('time_difference', parameters2, 'purple')
-RF_all('normalized_t_diff', parameters2, 'blue')
+RF_all('normalised_t_diff', parameters2, 'blue')
 RF(8787590, 600, 'time_difference_max', parameters1, 'green')
 RF(8787590, 600, 'time_difference', parameters2, 'purple')
-RF(8787590, 600, 'normalized_t_diff', parameters2, 'blue')
+RF(8787590, 600, 'normalised_t_diff', parameters2, 'blue')
 #==============================================================================
 
 
 
-##### Extract the best hyperparameters and using GridSearchCV and find the best training size #####
+##### Extract the Best Hyperparameters and Find the Best Slot Range (using GridSearchCV) #####
 #==============================================================================
 def hyperparameter_tuning(X_train, y_train):
     param_grid = {
@@ -174,18 +174,19 @@ def RF_turning (slot, S_range, responser, parameters, colour):
         
         score = r2_score(y_test, y_pred)
         scores.append(score)
-        print(f"Train size: {train_size}, R squared error: {score}")
+        print(f"Slot range: {train_size}, R squared error: {score}")
         if score > best_score:
             best_score = score
             best_train_size = train_size
 
     plt.figure(figsize=(10, 6))
     plt.plot(train_range, scores, color=colour, marker='o')
-    plt.title('Model Performance vs. Training Set Size (' + responser + ')')
-    plt.xlabel('Training Set Size')
+    plt.title('Model Performance vs. Slot Range (' + responser + ')')
+    plt.xlabel('Slot Range')
     plt.ylabel('R Squared Error')
     plt.grid(True)
-    plt.savefig(f'graphs/Train_Size_Performance {responser}.png')
+    plt.ylim(-1, 1)
+    plt.savefig(f'graphs/Slot_Range_Performance {responser}.png')
     plt.show()
     print(f"\nBest train size of {responser}: {best_train_size} with R squared error: {best_score}")
     
@@ -195,7 +196,7 @@ def RF_turning (slot, S_range, responser, parameters, colour):
 # Optimised the model
 best_train_size1, best_rf1 = RF_turning(8787590, 1201, 'time_difference_max', parameters1, 'green')
 best_train_size2, best_rf2 = RF_turning(8787590, 1201, 'time_difference', parameters2, 'purple')
-best_train_size3, best_rf3 = RF_turning(8787590, 1201, 'normalized_t_diff', parameters2, 'blue')
+best_train_size3, best_rf3 = RF_turning(8787590, 1201, 'normalised_t_diff', parameters2, 'blue')
 #==============================================================================
 
 
@@ -224,15 +225,15 @@ y_pred = best_rf1.predict(X_test)
 
 plotRF('time_difference_max', 'green')
 
-# normalized_t_diff
+# normalised_t_diff
 X_train, X_test, y_train, y_test = dataset(slot, best_train_size2, 'time_difference', parameters2)
 y_pred = best_rf2.predict(X_test)
 
 plotRF('time_difference', 'purple')
 
-# normalized_t_diff
-X_train, X_test, y_train, y_test = dataset(slot, best_train_size3, 'normalized_t_diff', parameters2)
+# normalised_t_diff
+X_train, X_test, y_train, y_test = dataset(slot, best_train_size3, 'normalised_t_diff', parameters2)
 y_pred = best_rf3.predict(X_test)
 
-plotRF('normalized_t_diff', 'blue')
+plotRF('normalised_t_diff', 'blue')
 #==============================================================================

@@ -41,7 +41,7 @@ def transformation(bids_df, payload_df):
     bids_df['time_difference'] = (bids_df['block_timestamp'] - bids_df['timestamp']).dt.total_seconds()
     payload_df['time_difference'] = (payload_df['block_timestamp'] - payload_df['bid_timestamp_ms'])
     
-    # Calculate normalized time difference
+    # Calculate normalised time difference
     min_time_difference_per_block = bids_df.groupby('block_number')['time_difference'].min().reset_index()
     max_time_difference_per_block = bids_df.groupby('block_number')['time_difference'].max().reset_index()
     
@@ -53,24 +53,24 @@ def transformation(bids_df, payload_df):
     bids_df['time_difference_max'] = 12 - bids_df['time_difference_min'] # multiple -1
     bids_df['time_difference_min'] = 12 - bids_df['time_difference_max'] # multiple -1
     
-    bids_df['normalized_t_diff'] = (bids_df['time_difference'] - bids_df['time_difference_min']) / (bids_df['time_difference_max'] - bids_df['time_difference_min'])
+    bids_df['normalised_t_diff'] = (bids_df['time_difference'] - bids_df['time_difference_min']) / (bids_df['time_difference_max'] - bids_df['time_difference_min'])
     
-    # Calculate normalized number of transaction
+    # Calculate normalised number of transaction
     min_num_tx_per_block = bids_df.groupby('block_number')['num_tx'].min().reset_index()
     max_num_tx_per_block = bids_df.groupby('block_number')['num_tx'].max().reset_index()
     
     bids_df = pd.merge(bids_df, min_num_tx_per_block, on='block_number', suffixes=('', '_min'))
     bids_df = pd.merge(bids_df, max_num_tx_per_block, on='block_number', suffixes=('', '_max'))
     
-    bids_df['normalized_num_tx'] = (bids_df['num_tx'] - bids_df['num_tx_min']) / (bids_df['num_tx_max'] - bids_df['num_tx_min'])
+    bids_df['normalised_num_tx'] = (bids_df['num_tx'] - bids_df['num_tx_min']) / (bids_df['num_tx_max'] - bids_df['num_tx_min'])
     
-    # Calculate normalized value
+    # Calculate normalised value
     min_value_per_block = bids_df.groupby('block_number')['value'].min().reset_index()
     max_value_per_block = bids_df.groupby('block_number')['value'].max().reset_index()
     
     bids_df = pd.merge(bids_df, min_value_per_block, on='block_number', suffixes=('', '_min'))
     bids_df = pd.merge(bids_df, max_value_per_block, on='block_number', suffixes=('', '_max'))
-    bids_df['normalized_value'] = (bids_df['value'] - bids_df['value_min']) / (bids_df['value_max'] - bids_df['value_min'])
+    bids_df['normalised_value'] = (bids_df['value'] - bids_df['value_min']) / (bids_df['value_max'] - bids_df['value_min'])
     
     # Gas used ratio
     gas_limit = 30000000
@@ -121,7 +121,7 @@ def get_matched_df(bids_df, payload_df):
 ### test ###
 #Load the bids and payloads CSV files
 
-#origin_bids_df = pd.read_csv("data/Eden_MEV-boost_bid_20240404.csv") # MEV-boost bids data from Eden Public Data
+#origin_bids_df = pd.read_csv("data/Eden_MEV-Boost_bid_20240404.csv") # MEV-Boost bids data from Eden Public Data
 #origin_payload_df = pd.read_csv("data/mev_blocks_19580000_to_19589999.csv") # MEV-Boost Winning Bid Data
 
 #bids_df, payload_df = cleaning(origin_bids_df, origin_payload_df)

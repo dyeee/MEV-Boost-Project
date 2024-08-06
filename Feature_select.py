@@ -15,7 +15,7 @@ warnings.filterwarnings('ignore')
 
 ### Load the bids and payloads CSV files ###
 
-origin_bids_df = pd.read_csv("data/Eden_MEV-boost_bid_20240404.csv") # MEV-boost bids data from Eden Public Data
+origin_bids_df = pd.read_csv("data/Eden_MEV-Boost_bid_20240404.csv") # MEV-Boost bids data from Eden Public Data
 origin_payload_df = pd.read_csv("data/mev_blocks_19580000_to_19589999.csv") # MEV-Boost Winning Bid Data
 
 # Check if matched_df already exists in the current namespace
@@ -29,8 +29,8 @@ else:
     print("matched_df already exists. Skipping processing steps.")
 
 # List of parameter sets
-parameters1 = ['base_fee_per_gas', 'normalized_num_tx', 'normalized_value', 
-              'gasUsedRatio','normalized_t_diff','time_difference_max',
+parameters1 = ['base_fee_per_gas', 'normalised_num_tx', 'normalised_value', 
+              'gasUsedRatio','normalised_t_diff','time_difference_max',
               'bids_count']
 parameters2 = ['base_fee_per_gas', 'num_tx', 'value', 
               'gasUsedRatio','time_difference','time_difference_max',

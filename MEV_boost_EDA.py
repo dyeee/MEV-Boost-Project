@@ -18,7 +18,7 @@ warnings.filterwarnings('ignore')
 
 ### Load the bids and payloads CSV files ###
 
-origin_bids_df = pd.read_csv("data/Eden_MEV-boost_bid_20240404.csv") # MEV-boost bids data from Eden Public Data
+origin_bids_df = pd.read_csv("data/Eden_MEV-Boost_bid_20240404.csv") # MEV-Boost bids data from Eden Public Data
 origin_payload_df = pd.read_csv("data/mev_blocks_19580000_to_19589999.csv") # MEV-Boost Winning Bid Data
 
 # Check if matched_df already exists in the current namespace
@@ -204,7 +204,7 @@ def correlation_matrix(df, numeric_cols, title):
 
     corr_matrix = df[numeric_cols].corr()
 
-    plt.figure(figsize=(14, 13))
+    plt.figure(figsize=(15, 13))
     sns.heatmap(corr_matrix, cmap='coolwarm', vmin=-1, vmax=1, annot=True, fmt=".2f")
     plt.title(f'Correlation Matrix ({title})')
     plt.savefig(f'graphs/Correlation ({title}).png')
@@ -219,13 +219,13 @@ sns_outlier ('bids', bids_df, 'base_fee_per_gas', 'num_tx', 'value', 'time_diffe
 sns_outlier ('winner', matched_df, 'base_fee_per_gas', 'num_tx', 'value', 'time_difference')#
 
 sns_compare ('normalised_bids', bids_df, 
-             'gasUsedRatio', 'normalized_num_tx', 'normalized_value', 'normalized_t_diff')#
+             'gasUsedRatio', 'normalised_num_tx', 'normalised_value', 'normalised_t_diff')#
 sns_compare ('normalised_winner', matched_df, 
-             'gasUsedRatio', 'normalized_num_tx', 'normalized_value', 'normalized_t_diff')#
+             'gasUsedRatio', 'normalised_num_tx', 'normalised_value', 'normalised_t_diff')#
 sns_outlier ('normalised_bids', bids_df, 
-             'gasUsedRatio', 'normalized_num_tx', 'normalized_value', 'normalized_t_diff')#
+             'gasUsedRatio', 'normalised_num_tx', 'normalised_value', 'normalised_t_diff')#
 sns_outlier ('normalised_winner', matched_df, 
-             'gasUsedRatio', 'normalized_num_tx', 'normalized_value', 'normalized_t_diff')#
+             'gasUsedRatio', 'normalised_num_tx', 'normalised_value', 'normalised_t_diff')#
 
 ###
 bids_df_filtered = bids_df[bids_df['time_difference'] <= 16]
@@ -241,8 +241,8 @@ plt.savefig('graphs/Distribution of time_difference in all Bids and Winner Bids.
 plt.show()#
 
 ###
-dist_all_vs_win('normalized_num_tx', 'blue')#
-dist_outlier('normalized_num_tx', 'blue')#
+dist_all_vs_win('normalised_num_tx', 'blue')#
+dist_outlier('normalised_num_tx', 'blue')#
 
 dist_all_vs_win('gasUsedRatio', 'green')#
 dist_outlier('gasUsedRatio', 'green')#
@@ -250,14 +250,14 @@ dist_outlier('gasUsedRatio', 'green')#
 dist_all_vs_win('value', 'brown')#
 dist_outlier('value', 'brown')#
 
-dist_all_vs_win('normalized_value', 'brown')#
-dist_outlier('normalized_value', 'brown')#
+dist_all_vs_win('normalised_value', 'brown')#
+dist_outlier('normalised_value', 'brown')#
 
 dist_all_vs_win('time_difference_max', 'purple')#
 dist_outlier('time_difference_max', 'purple')#
 
-dist_all_vs_win('normalized_t_diff', 'magenta')#
-dist_outlier('normalized_t_diff', 'magenta')#
+dist_all_vs_win('normalised_t_diff', 'magenta')#
+dist_outlier('normalised_t_diff', 'magenta')#
 
 ###
 print("Statistics for matched_df['time_difference']:")
@@ -290,62 +290,62 @@ plt.show()#
 ###
 scatter (matched_df, 'num_tx', 'base_fee_per_gas', 'blue', 'Winner Bids')#
 scatter (matched_df, 'time_difference', 'block_number', 'blue', 'Winner Bids')#
-scatter (matched_df, 'normalized_t_diff', 'block_number', 'blue', 'Winner Bids')#
+scatter (matched_df, 'normalised_t_diff', 'block_number', 'blue', 'Winner Bids')#
 scatter (matched_df, 'time_difference_max', 'block_number', 'green', 'Winner Bids')#
 scatter (matched_df, 'time_difference_max', 'bids_count', 'green', 'Winner Bids')#
 scatter (matched_df, 'time_difference_max', 'value', 'green', 'Winner Bids')#
 scatter (matched_df, 'time_difference_max', 'base_fee_per_gas', 'green', 'Winner Bids')#
 scatter (matched_df, 'time_difference_max', 'num_tx', 'green', 'Winner Bids')#
 
-scatter (matched_df, 'normalized_t_diff', 'time_difference_max', 'green', 'Winner Bids')#
-scatter (matched_df, 'normalized_t_diff', 'normalized_num_tx', 'blue', 'Winner Bids')#
-scatter (bids_df, 'normalized_t_diff', 'normalized_num_tx', 'red', 'All Bids')#
-scatter (matched_df, 'normalized_t_diff', 'normalized_value', 'blue', 'Winner Bids')#
-scatter (bids_df, 'normalized_t_diff', 'normalized_value', 'red', 'All Bids')#
+scatter (matched_df, 'normalised_t_diff', 'time_difference_max', 'green', 'Winner Bids')#
+scatter (matched_df, 'normalised_t_diff', 'normalised_num_tx', 'blue', 'Winner Bids')#
+scatter (bids_df, 'normalised_t_diff', 'normalised_num_tx', 'red', 'All Bids')#
+scatter (matched_df, 'normalised_t_diff', 'normalised_value', 'blue', 'Winner Bids')#
+scatter (bids_df, 'normalised_t_diff', 'normalised_value', 'red', 'All Bids')#
 
 
 ###
 block_number = matched_df['block_number']
-normalized_t_diff = matched_df['normalized_t_diff']
+normalised_t_diff = matched_df['normalised_t_diff']
 value_diff = (matched_df['value_max'] - matched_df['value'])
-name = ['block_number', 'value_diff', 'normalized_t_diff']
-scatter3(block_number, normalized_t_diff, value_diff, name)#
+name = ['block_number', 'value_diff', 'normalised_t_diff']
+scatter3(block_number, normalised_t_diff, value_diff, name)#
 
 
 block_number = matched_df['block_number']
-normalized_t_diff = matched_df['normalized_t_diff']
+normalised_t_diff = matched_df['normalised_t_diff']
 value_rank = matched_df['value_rank']
-name = ['block_number', 'normalized_t_diff', 'value_rank']
-scatter3(block_number, value_rank, normalized_t_diff, name)#
+name = ['block_number', 'normalised_t_diff', 'value_rank']
+scatter3(block_number, value_rank, normalised_t_diff, name)#
 
 
 block_number = matched_df['block_number']
-normalized_t_diff = matched_df['normalized_t_diff'] # also be use in density plot
+normalised_t_diff = matched_df['normalised_t_diff'] # also be use in density plot
 value_rank_percent = matched_df['value_rank_percent'] # also be use in density plot
 
-name = ['block_number', 'value_rank_percent', 'normalized_t_diff']
-scatter3(block_number, normalized_t_diff, value_rank_percent, name)#
+name = ['block_number', 'value_rank_percent', 'normalised_t_diff']
+scatter3(block_number, normalised_t_diff, value_rank_percent, name)#
 
 ###
-density(value_rank_percent , normalized_t_diff, ['value_rank_percent','normalized_t_diff'], False)#
+density(value_rank_percent , normalised_t_diff, ['value_rank_percent','normalised_t_diff'], False)#
 
-normalized_value = matched_df['normalized_value']
-normalized_t_diff = matched_df['normalized_t_diff']
-density(normalized_value , normalized_t_diff, ['normalized_value','normalized_t_diff'])#
+normalised_value = matched_df['normalised_value']
+normalised_t_diff = matched_df['normalised_t_diff']
+density(normalised_value , normalised_t_diff, ['normalised_value','normalised_t_diff'])#
 
 ###
-numeric_cols1 = ["time_difference", "normalized_t_diff", "time_difference_max",
-                 "normalized_value", "num_tx", "normalized_num_tx", "gasUsedRatio", 
+numeric_cols1 = ["time_difference", "normalised_t_diff", "time_difference_max",
+                 "normalised_value", "num_tx", "normalised_num_tx", "gasUsedRatio", 
                  "value", "bids_count", "base_fee_per_gas"]
 correlation_matrix(bids_df, numeric_cols1, 'time_difference')#
 
-numeric_cols2 = ["normalized_t_diff", "time_difference", "time_difference_max", 
-                 "normalized_value", "num_tx", "normalized_num_tx", "gasUsedRatio", 
+numeric_cols2 = ["normalised_t_diff", "time_difference", "time_difference_max", 
+                 "normalised_value", "num_tx", "normalised_num_tx", "gasUsedRatio", 
                  "value", "bids_count", "base_fee_per_gas"]
-correlation_matrix(bids_df, numeric_cols2, 'normalized_t_diff')#
+correlation_matrix(bids_df, numeric_cols2, 'normalised_t_diff')#
 
-numeric_cols3 = ["time_difference_max", "normalized_t_diff", "time_difference", 
-                 "normalized_value", "num_tx", "normalized_num_tx", "gasUsedRatio", 
+numeric_cols3 = ["time_difference_max", "normalised_t_diff", "time_difference", 
+                 "normalised_value", "num_tx", "normalised_num_tx", "gasUsedRatio", 
                  "value", "bids_count", "base_fee_per_gas"]
 correlation_matrix(bids_df, numeric_cols3, 'time_difference_max')#
 #==============================================================================
