@@ -114,7 +114,7 @@ def RF (slot, slot_range, responser, parameters, colour):
     print("Number of testing data:", len(y_test))
 
     # plot
-    plt.figure(figsize=(10, 8))
+    plt.figure(figsize=(10, 8), dpi = 600)
     plt.plot(list(y_test), color='red', label = 'Actual ' + responser)
     plt.plot(y_pred, color=colour, label='Predicted ' + responser)
     plt.title('Actual ' + responser + ' vs Predicted ' + responser)
@@ -179,7 +179,7 @@ def RF_turning (slot, S_range, responser, parameters, colour):
             best_score = score
             best_train_size = train_size
 
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(10, 6), dpi = 600)
     plt.plot(train_range, scores, color=colour, marker='o')
     plt.title('Model Performance vs. Slot Range (' + responser + ')')
     plt.xlabel('Slot Range')
@@ -204,7 +204,7 @@ best_train_size3, best_rf3 = RF_turning(8787590, 1201, 'normalised_t_diff', para
 ### Plot for the best model ###
 def plotRF (name, colour):
 
-    plt.figure(figsize=(10, 8))
+    plt.figure(figsize=(10, 8), dpi = 600)
     plt.plot(list(y_test), color='red', label='Actual ' + name)
     plt.plot(y_pred, color=colour, label='Predicted ' + name)
     plt.title('Actual ' + name + ' vs Predicted ' + name)
