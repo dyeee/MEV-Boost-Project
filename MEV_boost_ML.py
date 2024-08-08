@@ -84,6 +84,8 @@ def RF_all(responser, parameters, colour, n_estimators=100, test_size=0.2, rando
     print("Number of training data:", len(y_train))
     print("Number of testing data:", len(y_test))
 
+    # plot
+    plt.figure(figsize=(10, 8), dpi = 600)
     plt.plot(list(y_test), color='red', label='Actual ' + responser)
     plt.plot(y_pred, color=colour, label='Predicted ' + responser)
     plt.title('Actual ' + responser + ' vs Predicted ' + responser)

@@ -45,7 +45,7 @@ def plot_duplicate(df, title):
     
     mean_count = block_hash_counts_df['count'].mean()
     
-    plt.figure(figsize=(12, 8))
+    plt.figure(figsize=(12, 8), dpi = 600)
     sns.histplot(block_hash_counts_df['count'], kde=False, bins=range(1, block_hash_counts_df['count'].max() + 1), color='skyblue', edgecolor='black')
     
 
@@ -121,7 +121,7 @@ def scatter (df, v1, v2, colour, name=''):
     a = df[v1]
     b = df[v2]
 
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(10, 6), dpi = 600)
     plt.scatter(a, b, alpha=0.3, color=colour)
     plt.title(f'Scatter Plot of "{v2}" vs "{v1}"')
     plt.xlabel(v1)
@@ -132,7 +132,7 @@ def scatter (df, v1, v2, colour, name=''):
     
 ### Compare 3 variables using scatter plot ###
 def scatter3(x, y, z, name=['','',''], cmap = 'coolwarm'):
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(10, 6), dpi = 600)
     
     sc = plt.scatter(x, y, c=z, cmap = cmap, alpha=0.8)
     plt.colorbar(sc, label=name[2])
@@ -204,7 +204,7 @@ def correlation_matrix(df, numeric_cols, title):
 
     corr_matrix = df[numeric_cols].corr()
 
-    plt.figure(figsize=(15, 13))
+    plt.figure(figsize=(15, 13), dpi = 600)
     sns.heatmap(corr_matrix, cmap='coolwarm', vmin=-1, vmax=1, annot=True, fmt=".2f")
     plt.title(f'Correlation Matrix ({title})')
     plt.savefig(f'graphs/Correlation ({title}).png')
