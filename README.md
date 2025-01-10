@@ -4,6 +4,9 @@ This project includes several Python scripts that manage and analyze Ethereum ME
 
 Additionally, Jupyter Notebook versions of the MEV_boost_EDA, MEV_boost_ML, and feature_select scripts are provided for easier viewing and interaction. During the development phase, the Spyder IDE was primarily used, offering a convenient variable explorer for debugging and enhancing model training speed. This choice is particularly important as the dataset exceeds 3 million entries, which can strain the Jupyter kernel and slow down processing.
 
+For a deeper understanding of this research👉 you can watch the video on YouTube:
+[![Ethereum MEV Blocks Analysis](https://img.youtube.com/vi/BoSHyHDDbvk/0.jpg)](https://youtu.be/BoSHyHDDbvk?si=qSquOL7-7VxFMHHM)
+
 
 ## Current Status
 
